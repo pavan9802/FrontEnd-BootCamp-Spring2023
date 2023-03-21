@@ -39,13 +39,32 @@ const a_text = document.getElementById("a_text");
 const b_text = document.getElementById("b_text");
 const c_text = document.getElementById("c_text");
 const d_text = document.getElementById("d_text");
-const answerEls = document.querySelector(".answer");
+const answerEls = document.querySelectorAll(".answer");
 const submitBtn = document.getElementById("submit");
 
 let currentQuiz = 0;
 let score = 0;
 
+function getSelected() {
+  let answer;
+
+  answerEls.forEach((answerEl) => {
+    if (answerEl.checked) {
+      answer = answerEl.id;
+    }
+  });
+  console.log(answer);
+  return answer;
+}
+
+function deselect() {
+  answerEls.forEach((answerEl) => {
+    answerEl.checked = false;
+  });
+}
+
 function loadQuiz() {
+  deselect();
   const currentQuestion = data[currentQuiz];
   questionEl.innerHTML = currentQuestion.question;
   a_text.innerHTML = currentQuestion.a;
@@ -53,7 +72,24 @@ function loadQuiz() {
   c_text.innerHTML = currentQuestion.c;
   d_text.innerHTML = currentQuestion.d;
 }
-
-submitBtn.addEventListener("click"), () => {};
-
 loadQuiz();
+submitBtn.addEventListener("click", () => {
+  const answer = getSelected();
+
+  if (answer) {
+    if (answer === data[currentQuiz].correct) {
+      score++;
+    }
+    console.log("here");
+    currentQuiz++;
+    if (currentQuiz < data.length) {
+      loadQuiz();
+    } else {
+      quiz.innerHTML = `<h2>You answered ${score} / ${data.length} questions correctly</>
+            
+            <button onClick='location.reload()'> Reload</>
+            
+            `;
+    }
+  }
+});
